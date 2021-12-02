@@ -12,7 +12,7 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-static HELLO: &[u8] = b"Hello World!";
+// static HELLO: &[u8] = b"Hello World!";
 
 #[no_mangle]    // don't mangle the function name
 pub extern "C" fn _start() -> ! {
