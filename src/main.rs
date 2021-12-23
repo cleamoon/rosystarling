@@ -1,33 +1,33 @@
 #![no_std]      // don't link the Rust standard library
 #![no_main]     // disable all Rust-level entry points
-
-mod vga_buffer;
+#![feature(custom_test_frameworks)]
+#![test_runner(rosystarling::test_runner)]
+#![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
-
-#[panic_handler]    // This function is called on panic
-fn panic(_info: &PanicInfo) -> ! {
-    println!("{}", _info); 
-    
-    loop {}
-}
+use rosystarling::println;
 
 // static HELLO: &[u8] = b"Hello World!";
 
 #[no_mangle]    // don't mangle the function name
 pub extern "C" fn _start() -> ! {
-    /*let vga_buffer = 0xb8000 as *mut u8;
-    
-    for (i, &byte) in HELLO.iter().enumerate() {
-    unsafe {
-     *vga_buffer.offset(i as isize * 2) = byte;
-     *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
-}
-}*/
-    /*use core::fmt::Write;
-    vga_buffer::WRITER.lock().write_str("Hello again").unwrap();
-    write!(vga_buffer::WRITER.lock(), ", some numbers: {} {}", 42, 1.337).unwrap();*/
     println!("Hello World{}", "!");
 
+    #[cfg(test)]
+    test_main();
+
     loop {}
+}
+
+#[cfg(not(test))]
+#[panic_handler]    // This function is called on panic
+fn panic(_info: &PanicInfo) -> ! {
+    println!("{}", _info); 
+    loop {}
+}
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    rosystarling::test_panic_handler(info)
 }
