@@ -19,14 +19,14 @@ pub extern "C" fn _start() -> ! {
     test_main();
 
     println!("It did not crash!");
-    loop {}
+    rosystarling::hlt_loop();
 }
 
 #[cfg(not(test))]
 #[panic_handler]    // This function is called on panic
 fn panic(_info: &PanicInfo) -> ! {
     println!("{}", _info); 
-    loop {}
+    rosystarling::hlt_loop();
 }
 
 #[cfg(test)]
